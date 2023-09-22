@@ -1,12 +1,18 @@
-import express, { Express, Request, Response } from 'express';
+import dotenv from 'dotenv';
+import App from './app/app';
 
-const app: Express = express();
-const port = process.env.PORT;
+async function startApp() {
+  try {
+    const env = dotenv.config().parsed
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server updated!');
-});
+    const app = new App(env);
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
+    app.initConfig()
+    app.build()
+    app.listen()
+  } catch (error) {
+    console.log("App initialization failed!", error);
+  }
+}
+
+startApp()
