@@ -3,9 +3,9 @@ import App from './app/app';
 
 async function startApp() {
   try {
-    const env = dotenv.config().parsed
+    dotenv.config()
 
-    const app = new App(env);
+    const app = new App(process.env);
 
     app.initConfig()
     app.build()

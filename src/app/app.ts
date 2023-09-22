@@ -13,7 +13,7 @@ class App {
     private server: InversifyExpressServer
     private app: Application
 
-    constructor(env: DotenvParseOutput) {        
+    constructor(env: NodeJS.ProcessEnv) {        
         this.port = Number(env.PORT);
         this.server = new InversifyExpressServer(container);
     }
