@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import App from './app/app';
+import App from './core/app';
 
 async function startApp() {
   try {

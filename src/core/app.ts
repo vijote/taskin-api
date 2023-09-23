@@ -1,12 +1,18 @@
+// Inversify dependencies
 import 'reflect-metadata'
-import { Application, json } from 'express'
 import { InversifyExpressServer } from 'inversify-express-utils'
-import { DotenvParseOutput } from 'dotenv'
 import container from './inversify.config'
+
+// Express specific
+import { Application, json } from 'express'
 
 // Controllers
 import '../controllers/app.controller'
 import '../controllers/users.controller'
+import '../controllers/tasks.controller'
+
+// Validation Middlewares
+import ErrorMiddleware from '../middlewares/errorHandler.middleware'
 
 class App {
     public port: number = 3000
@@ -22,6 +28,8 @@ class App {
         this.server.setConfig((app: Application) => {
             app.use(json({ limit: '5mb' }))
         })
+
+        this.server.setErrorConfig(app => app.use(ErrorMiddleware))
     }
 
     public build() {
