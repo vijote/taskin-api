@@ -15,10 +15,16 @@ class EnvironmentConnection {
 
     constructor() {
         this.variables = configDotenv().parsed
+        let missingVariables = false
 
         for (const variable of EnvironmentConnection.expectedVariables) {
-            if(!this.variables[variable]) process.exit(1)
+            if(!this.variables[variable]) {
+                console.error('missing variable:', variable)
+                missingVariables = true
+            }
         }
+
+        if(missingVariables) process.exit(1)
     }
 }
 
