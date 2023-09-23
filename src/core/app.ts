@@ -19,8 +19,8 @@ class App {
     private server: InversifyExpressServer
     private app: Application
 
-    constructor() {
-        this.port = Number(process.env.PORT || 3000);
+    constructor(port: string) {
+        this.port = Number(port || 3000);
         this.server = new InversifyExpressServer(container);
     }
 
