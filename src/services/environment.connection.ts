@@ -1,4 +1,4 @@
-import { DotenvParseOutput, configDotenv } from "dotenv";
+import dotenv, { DotenvParseOutput } from "dotenv";
 import { injectable } from 'inversify'
 
 @injectable()
@@ -14,7 +14,7 @@ class EnvironmentConnection {
     ])
 
     constructor() {
-        this.variables = configDotenv().parsed
+        this.variables = dotenv.config().parsed
         let missingVariables = false
 
         for (const variable of EnvironmentConnection.expectedVariables) {
