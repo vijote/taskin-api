@@ -5,7 +5,7 @@ async function startApp() {
   try {
     dotenv.config()
 
-    const app = new App(process.env);
+    const app = new App();
 
     app.initConfig()
     app.build()

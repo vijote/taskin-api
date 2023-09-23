@@ -7,6 +7,7 @@ import TasksController from '../controllers/tasks.controller';
 import CreateTaskMiddleware from '../middlewares/createTask.middleware';
 import CreateUserMiddleware from '../middlewares/createUser.middleware';
 import AuthorizationMiddleware from '../middlewares/authorization.middleware';
+import EnvironmentConnection from '../services/environment.connection';
 
 const container = new Container();
 
@@ -23,7 +24,8 @@ container.bind(CreateTaskMiddleware).toSelf()
 container.bind(CreateUserMiddleware).toSelf()
 container.bind(AuthorizationMiddleware).toSelf()
 
-// Prisma
+// Connections
 container.bind(PrismaConnection).toSelf().inSingletonScope()
+container.bind(EnvironmentConnection).toSelf().inSingletonScope()
 
 export default container;

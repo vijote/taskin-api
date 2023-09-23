@@ -15,12 +15,12 @@ import '../controllers/tasks.controller'
 import ErrorMiddleware from '../middlewares/errorHandler.middleware'
 
 class App {
-    public port: number = 3000
+    public port: number
     private server: InversifyExpressServer
     private app: Application
 
-    constructor(env: NodeJS.ProcessEnv) {        
-        this.port = Number(env.PORT);
+    constructor() {
+        this.port = Number(process.env.PORT || 3000);
         this.server = new InversifyExpressServer(container);
     }
 
