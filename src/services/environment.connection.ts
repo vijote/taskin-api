@@ -15,6 +15,8 @@ class EnvironmentConnection {
 
     constructor() {
         this.variables = dotenv.config().parsed
+        console.log('added variables:', this.variables);
+        
         let missingVariables = false
 
         for (const variable of EnvironmentConnection.expectedVariables) {
