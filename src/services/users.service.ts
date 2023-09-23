@@ -7,11 +7,11 @@ import EnvironmentConnection from './environment.connection';
 @injectable()
 class UsersService {
     private prisma: PrismaConnection;
-    private env: EnvironmentConnection;
+    private environmentConnector: EnvironmentConnection;
 
     constructor(prisma: PrismaConnection, env: EnvironmentConnection) {
         this.prisma = prisma;
-        this.env = env;
+        this.environmentConnector = env;
     }
 
     async getUser(encodedId: string) {
@@ -48,10 +48,10 @@ class UsersService {
      * @returns base64 encoded string
      */
     encryptId(id: number) {
-        const iv = Buffer.from(this.env.variables.ENCRYPTION_IV, 'utf8');
-        const key = Buffer.from(this.env.variables.ENCRYPTION_KEY.substring(0, 32), 'utf8');
+        const iv = Buffer.from(this.environmentConnector.env('ENCRYPTION_IV'), 'utf8');
+        const key = Buffer.from(this.environmentConnector.env('ENCRYPTION_KEY').substring(0, 32), 'utf8');
 
-        const cipher = crypto.createCipheriv(this.env.variables.ENCRYPTION_ALGORITHM, key, iv);
+        const cipher = crypto.createCipheriv(this.environmentConnector.env('ENCRYPTION_ALGORITHM'), key, iv);
 
         const encrypted = cipher.update(id.toString(), 'utf-8', 'base64') + cipher.final('base64');
 
@@ -64,10 +64,10 @@ class UsersService {
      * @returns decoded user id
      */
     decryptId(id: string): number {
-        const iv = Buffer.from(this.env.variables.ENCRYPTION_IV, 'utf8');
-        const key = Buffer.from(this.env.variables.ENCRYPTION_KEY.substring(0, 32), 'utf8');
+        const iv = Buffer.from(this.environmentConnector.env('ENCRYPTION_IV'), 'utf8');
+        const key = Buffer.from(this.environmentConnector.env('ENCRYPTION_KEY').substring(0, 32), 'utf8');
 
-        const decipher = crypto.createDecipheriv(this.env.variables.ENCRYPTION_ALGORITHM, key, iv);
+        const decipher = crypto.createDecipheriv(this.environmentConnector.env('ENCRYPTION_ALGORITHM'), key, iv);
 
         const decrypted = decipher.update(id, 'base64', 'utf8') + decipher.final('utf8');
 

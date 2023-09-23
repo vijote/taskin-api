@@ -1,30 +1,18 @@
 import { injectable } from 'inversify'
+import { AppException } from '../core/utils'
 
 @injectable()
 class EnvironmentConnection {
     public variables: NodeJS.ProcessEnv
-    private static expectedVariables = new Set([
-        'PORT',
-        'DATABASE_URL',
-        'SHADOW_DATABASE_URL',
-        'ENCRYPTION_KEY',
-        'ENCRYPTION_IV',
-        'ENCRYPTION_ALGORITHM'
-    ])
 
-    constructor() {
-        this.variables = process.env
-        
-        let missingVariables = false
-
-        for (const variable of EnvironmentConnection.expectedVariables) {
-            if(!this.variables[variable]) {
-                console.error('missing variable:', variable)
-                missingVariables = true
-            }
+    env(variableName: string) {
+        const variable = process.env[variableName]
+        if (!variable) {
+            console.log(`missing environment variable: ${variableName}`)
+            throw new AppException(`Missing server configuration`, 500)
         }
 
-        if(missingVariables) process.exit(1)
+        return variable
     }
 }
 
