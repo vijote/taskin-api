@@ -1,9 +1,8 @@
-import dotenv, { DotenvParseOutput } from "dotenv";
 import { injectable } from 'inversify'
 
 @injectable()
 class EnvironmentConnection {
-    public variables: DotenvParseOutput
+    public variables: NodeJS.ProcessEnv
     private static expectedVariables = new Set([
         'PORT',
         'DATABASE_URL',
@@ -14,13 +13,12 @@ class EnvironmentConnection {
     ])
 
     constructor() {
-        this.variables = dotenv.config().parsed
-        console.log('added variables:', this.variables);
+        this.variables = process.env
         
         let missingVariables = false
 
         for (const variable of EnvironmentConnection.expectedVariables) {
-            if(!process.env[variable]) {
+            if(!this.variables[variable]) {
                 console.error('missing variable:', variable)
                 missingVariables = true
             }
