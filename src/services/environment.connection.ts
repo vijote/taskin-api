@@ -18,7 +18,7 @@ class EnvironmentConnection {
         let missingVariables = false
 
         for (const variable of EnvironmentConnection.expectedVariables) {
-            if(!this.variables[variable]) {
+            if(!process.env[variable]) {
                 console.error('missing variable:', variable)
                 missingVariables = true
             }
