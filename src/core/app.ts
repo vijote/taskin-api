@@ -14,6 +14,7 @@ import '../controllers/tasks.controller'
 
 // Validation Middlewares
 import ErrorMiddleware from '../middlewares/errorHandler.middleware'
+import EnvironmentConnection from '../services/environment.connection'
 
 class App {
     public port: number
@@ -26,9 +27,11 @@ class App {
     }
 
     public initConfig(){
+        const env = new EnvironmentConnection().env;
+        
         this.server.setConfig((app: Application) => {
             app.use(cors({
-                origin: 'http://localhost:5173', // Replace with your frontend's URL
+                origin: env("FRONTEND_URL"), // Replace with your frontend's URL
                 methods: ['GET', 'POST', 'PUT', 'DELETE'],
                 allowedHeaders: ['Content-Type', 'Authorization'],
             }));
