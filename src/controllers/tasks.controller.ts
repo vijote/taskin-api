@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 import { controller, BaseHttpController, httpGet, httpPost, httpPut } from 'inversify-express-utils'
 import TasksService from '../services/tasks.service';
 import CreateTaskMiddleware from '../middlewares/createTask.middleware';
@@ -20,7 +20,7 @@ class TasksController extends BaseHttpController {
     @httpGet('/')
     async getAll(req: Request) {
         const result = await this.tasksService.getAll(req.taskin.userId);
-        return this.json({ message: `${result.length} tasks found`, data: result }, 200)
+        return this.json({ message: `${result.total} tasks found`, data: result }, 200)
     }
 
     /**
@@ -43,7 +43,7 @@ class TasksController extends BaseHttpController {
      */
     @httpPut('/:id')
     async update(req: Request) {
-        const result = await this.tasksService.update(Number(req.params.id), {
+        const result = await this.tasksService.update(req.params.id, {
             content: req.body.content,
             state: req.body.state,
             title: req.body.title,
@@ -51,6 +51,19 @@ class TasksController extends BaseHttpController {
         });
 
         return this.json({ message: "task updated correctly!", data: result }, 200)
+    }
+
+    /**
+     * Retrieves a specific task
+     */
+    @httpGet('/:id')
+    async get(req: Request) {
+        const result = await this.tasksService.get({
+            authorId: req.taskin.userId,
+            id: req.params.id
+        });
+
+        return this.json({ message: `task found`, data: result }, 200)
     }
 }
 

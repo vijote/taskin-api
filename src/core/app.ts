@@ -33,7 +33,7 @@ class App {
             app.use(cors({
                 origin: env("FRONTEND_URL"),
                 methods: ['GET', 'POST', 'PUT'],
-                allowedHeaders: ['Content-Type', 'Authorization'],
+                allowedHeaders: ['Content-Type', 'user-id'],
             }));
             app.use(json({ limit: '5mb' }))
         })

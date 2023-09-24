@@ -8,6 +8,7 @@ import CreateTaskMiddleware from '../middlewares/createTask.middleware';
 import CreateUserMiddleware from '../middlewares/createUser.middleware';
 import AuthorizationMiddleware from '../middlewares/authorization.middleware';
 import EnvironmentConnection from '../services/environment.connection';
+import Service from '../services/base.service';
 
 const container = new Container();
 
@@ -16,6 +17,7 @@ container.bind(UsersController).toSelf()
 container.bind(TasksController).toSelf()
 
 // Services
+container.bind(Service).toSelf()
 container.bind(UsersService).toSelf()
 container.bind(TasksService).toSelf()
 
