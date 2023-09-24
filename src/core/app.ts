@@ -28,15 +28,14 @@ class App {
 
     public initConfig(){
         const env = new EnvironmentConnection().env;
-        
+
         this.server.setConfig((app: Application) => {
             app.use(cors({
-                origin: env("FRONTEND_URL"), // Replace with your frontend's URL
-                methods: ['GET', 'POST', 'PUT', 'DELETE'],
+                origin: env("FRONTEND_URL"),
+                methods: ['GET', 'POST', 'PUT'],
                 allowedHeaders: ['Content-Type', 'Authorization'],
             }));
             app.use(json({ limit: '5mb' }))
-            app.use(urlencoded());
         })
 
         this.server.setErrorConfig(app => app.use(ErrorMiddleware))
