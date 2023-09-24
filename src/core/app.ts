@@ -4,7 +4,8 @@ import { InversifyExpressServer } from 'inversify-express-utils'
 import container from './inversify.config'
 
 // Express specific
-import { Application, json } from 'express'
+import { Application, json, urlencoded } from 'express'
+import cors from 'cors'
 
 // Controllers
 import '../controllers/app.controller'
@@ -26,7 +27,13 @@ class App {
 
     public initConfig(){
         this.server.setConfig((app: Application) => {
+            app.use(cors({
+                origin: 'http://localhost:5173', // Replace with your frontend's URL
+                methods: ['GET', 'POST', 'PUT', 'DELETE'],
+                allowedHeaders: ['Content-Type', 'Authorization'],
+            }));
             app.use(json({ limit: '5mb' }))
+            app.use(urlencoded());
         })
 
         this.server.setErrorConfig(app => app.use(ErrorMiddleware))

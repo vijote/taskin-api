@@ -10,7 +10,7 @@ function ErrorMiddleware(err: AppException | Error, req: Request, res: Response,
 
     // Response handling
     res.status((err as AppException)?.statusCode || 500).json({
-        message: "An error ocurred processing your request",
+        message: "Ocurrió un error al procesar tu solicitud",
         error: err.message
     })
 }

@@ -9,7 +9,7 @@ class EnvironmentConnection {
         const variable = process.env[variableName]
         if (!variable) {
             console.log(`missing environment variable: ${variableName}`)
-            throw new AppException(`Missing server configuration`, 500)
+            throw new AppException(`El servidor tiene configuraciones incorrectas`, 500)
         }
 
         return variable

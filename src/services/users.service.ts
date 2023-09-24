@@ -23,7 +23,7 @@ class UsersService {
             }
         })
 
-        if(!foundUser) throw new AppException("User not found", 404)
+        if(!foundUser) throw new AppException("No se ha encontrado el usuario", 404)
 
         return foundUser
     }
@@ -35,7 +35,7 @@ class UsersService {
             }
         })
 
-        if(repeatedUser) throw new AppException("User already exists", 409)
+        if(repeatedUser) throw new AppException("El usuario ya se encuentra registrado", 409)
         
         const createdUser = await this.prisma.client.user.create({ data: { name } })
 

@@ -16,7 +16,7 @@ class AuthorizationMiddleware extends BaseMiddleware {
     public async handler(req: Request, _res: Response, next: NextFunction) {
         const userId = req.header("user-id")
 
-        if (!userId) return next(new AppException('Unauthorized', 401))
+        if (!userId) return next(new AppException('No estás logeado', 401))
 
         const user = await this.usersService.getUser(userId)
 
