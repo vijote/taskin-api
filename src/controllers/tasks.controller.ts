@@ -89,26 +89,6 @@ class TasksController extends BaseHttpController {
 
         return this.json({ message: `task found`, data: result }, 200)
     }
-
-    /**
-     * Retrieves all tasks which correspond to the received state
-     */
-    @httpGet('/filter-by-state/:state')
-    async getByState(req: Request) {
-        const result = await this.tasksService.getAllByState(req.taskin.userId, req.params.state as TaskState);
-
-        return this.json({ message: `${result.length} tasks found`, data: result }, 200)
-    }
-
-    /**
-     * Retrieves all tasks which correspond to the received state
-     */
-    @httpGet('/filter-by-title/:title')
-    async getByTitle(req: Request) {
-        const result = await this.tasksService.getAllByTitle(req.taskin.userId, req.params.title as TaskState);
-
-        return this.json({ message: `${result.length} tasks found`, data: result }, 200)
-    }
 }
 
 export default TasksController

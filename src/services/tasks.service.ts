@@ -5,6 +5,7 @@ import { AppException } from '../core/utils';
 import Service from './base.service';
 import EnvironmentConnection from './environment.connection';
 import { ParsedQs } from 'qs';
+import { Prisma } from '@prisma/client';
 
 type CreateTaskOptions = {
     content: string,
@@ -17,8 +18,6 @@ type GetTaskOptions = {
     authorId: number
     id: string
 }
-
-type UpdateTaskOptions = Partial<CreateTaskOptions>;
 
 type EncodedTask = {
     id: string,
@@ -159,44 +158,23 @@ class TasksService extends Service {
         return encodedFilteredTasks
     }
 
-    async getAllByTitle(userId: number, title: string) {
-        const filteredTasks = await this.prisma.client.task.findMany({
-            select: {
-                id: true,
-                createdAt: true,
-                title: true,
-                content: true,
-                state: true
-            },
-            orderBy: {
-                createdAt: 'asc'
-            },
-            where: {
-                title: {
-                    contains: title
-                },
-                authorId: userId
-            }
-        })
-
-        const encodedFilteredTasks: EncodedTask[] = filteredTasks.map(task => ({
-            ...task,
-            id: encodeURIComponent(this.encryptId(task.id))
-        }))
-
-        return encodedFilteredTasks
-    }
-
     create(data: CreateTaskOptions) {
-        return this.prisma.client.task.create({ data })
+        return this.prisma.client.task.create({ data, select: { title: true, content: true } })
     }
 
-    update(encodedId: string, data: UpdateTaskOptions) {
+    async update(encodedId: string, data: Partial<CreateTaskOptions>) {
         const id = this.decryptId(encodedId)
-        return this.prisma.client.task.update({
+        const updatedTask = await this.prisma.client.task.update({
             data,
             where: { id, authorId: data.authorId }
         })
+
+        if (!updatedTask) throw new AppException("No pudimos actualizar tu tarea", 409)
+
+        return {
+            ...updatedTask,
+            id: encodeURIComponent(this.encryptId(updatedTask.id))
+        }
     }
 
     async get(data: GetTaskOptions) {
