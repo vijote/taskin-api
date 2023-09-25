@@ -5,7 +5,6 @@ import { AppException } from '../core/utils';
 import Service from './base.service';
 import EnvironmentConnection from './environment.connection';
 import { ParsedQs } from 'qs';
-import { Prisma } from '@prisma/client';
 
 type CreateTaskOptions = {
     content: string,
