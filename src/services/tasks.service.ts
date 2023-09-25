@@ -54,25 +54,9 @@ class TasksService extends Service {
     }
 
     async getAll(userId: number, queryParams: ParsedQs) {
-        const orderByOptions = []
+        const queryOptions = this.generateQueryOptions(queryParams)
 
-        const orderDict = {
-            '0': 'desc',
-            '1': 'asc'
-        }
-
-        for (const key in queryParams) {
-            const isOrderByProperty = key.includes('sort')
-            const test = queryParams[key] as string
-            const property = key.replace('sort-', '')
-
-            if (isOrderByProperty) orderByOptions.push({
-                [property]: orderDict[test]
-            })
-        }
-
-        console.log(orderByOptions);
-
+        if (queryParams.isCount) return this.countAll(userId)
 
         const filteredTasks = await this.prisma.client.task.findMany({
             select: {
@@ -83,10 +67,11 @@ class TasksService extends Service {
                 state: true
             },
             orderBy: [
-                ...orderByOptions
+                ...queryOptions.orderBy
             ],
             where: {
-                authorId: userId
+                authorId: userId,
+                ...queryOptions.where
             }
         })
 
@@ -96,6 +81,56 @@ class TasksService extends Service {
         }))
 
         return encodedFilteredTasks
+    }
+
+    countAll(userId: number) {
+        return this.prisma.client.task.count({
+            where: {
+                authorId: userId
+            }
+        })
+    }
+
+    private generateQueryOptions(queryParams: ParsedQs) {
+        const orderByOptions = []
+        const filterOptions = {}
+
+        const orderDict = {
+            '0': 'desc',
+            '1': 'asc'
+        }
+
+        const SORT_PREFIX = 'sort-'
+        const FILTER_PREFIX = 'filter-'
+
+        for (const key in queryParams) {
+            const isOrderProperty = key.includes(SORT_PREFIX)
+            const isFilterProperty = key.includes(FILTER_PREFIX)
+
+            if (isOrderProperty) {
+                const property = key.replace(SORT_PREFIX, '')
+                const value = queryParams[key] as string
+
+                orderByOptions.push({
+                    [property]: orderDict[value]
+                })
+            }
+
+            if (isFilterProperty) {
+                const property = key.replace(FILTER_PREFIX, '')
+                const value = queryParams[key] as string
+
+                if (property === "title") filterOptions[property] = {
+                    contains: value
+                }
+                else filterOptions[property] = value
+            }
+        }
+
+        return {
+            where: filterOptions,
+            orderBy: orderByOptions
+        }
     }
 
     async getAllByState(userId: number, state: TaskState) {
@@ -108,7 +143,7 @@ class TasksService extends Service {
                 state: true
             },
             orderBy: {
-                createdAt: 'desc'
+                createdAt: 'asc'
             },
             where: {
                 state,
@@ -125,8 +160,6 @@ class TasksService extends Service {
     }
 
     async getAllByTitle(userId: number, title: string) {
-        console.log("getAllByTitle", title);
-
         const filteredTasks = await this.prisma.client.task.findMany({
             select: {
                 id: true,
@@ -136,7 +169,7 @@ class TasksService extends Service {
                 state: true
             },
             orderBy: {
-                createdAt: 'desc'
+                createdAt: 'asc'
             },
             where: {
                 title: {

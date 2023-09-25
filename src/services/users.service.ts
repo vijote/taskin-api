@@ -13,30 +13,29 @@ class UsersService extends Service {
 
     async getUser(encodedId: string) {
         const id = Number(this.decryptId(encodedId))
-         
+
         const foundUser = await this.prisma.client.user.findFirst({
             where: {
                 id
             }
         })
 
-        if(!foundUser) throw new AppException("No se ha encontrado el usuario", 404)
+        if (!foundUser) throw new AppException("No se ha encontrado el usuario", 404)
 
         return foundUser
     }
 
-    async create(name: string) {
-        const repeatedUser = await this.prisma.client.user.findFirst({
-            where: {
-                name
-            }
+    async login(name: string) {
+        const existingUser = await this.prisma.client.user.findFirst({
+            select: { id: true },
+            where: { name }
         })
 
-        if(repeatedUser) throw new AppException("El usuario ya se encuentra registrado", 409)
-        
-        const createdUser = await this.prisma.client.user.create({ data: { name } })
+        if (existingUser) return this.encryptId(existingUser.id)
 
-        return this.encryptId(createdUser.id);
+        const newUser = await this.prisma.client.user.create({ data: { name } })
+
+        return this.encryptId(newUser.id);
     }
 }
 

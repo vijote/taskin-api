@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request } from "express";
 import UsersService from "../services/users.service";
 import { BaseHttpController, controller, httpGet, httpPost } from "inversify-express-utils";
 import CreateUserMiddleware from "../middlewares/createUser.middleware";
@@ -13,12 +13,11 @@ class UsersController extends BaseHttpController {
     }
 
     /**
-     * Registers a new user
+     * Finds or creates a new user
      */
     @httpPost('/', CreateUserMiddleware)
-    async create(req: Request) {
-        const { body } = req;
-        const encryptedId = await this.usersService.create(body?.name);
+    async login(req: Request) {
+        const encryptedId = await this.usersService.login(req?.body?.name as string);
 
         return this.json({
             message: "user created correctly", data: {
