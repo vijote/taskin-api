@@ -7,6 +7,8 @@ function ErrorMiddleware(err: AppException | Error, req: Request, res: Response,
         route: req.url,
         error: err.message
     })
+    console.log(err.stack);
+    
 
     // Response handling
     res.status((err as AppException)?.statusCode || 500).json({

@@ -40,7 +40,7 @@ class Service {
 
         const decipher = crypto.createDecipheriv(this.environmentConnector.env('ENCRYPTION_ALGORITHM'), key, iv);
 
-        const decrypted = decipher.update(id, 'base64', 'utf8') + decipher.final('utf8');
+        const decrypted = decipher.update(decodeURIComponent(id), 'base64', 'utf8') + decipher.final('utf8');
 
         return Number(decrypted);
     }

@@ -32,7 +32,7 @@ class App {
         this.server.setConfig((app: Application) => {
             app.use(cors({
                 origin: env("FRONTEND_URL"),
-                methods: ['GET', 'POST', 'PUT'],
+                methods: ['GET', 'POST', 'PUT', 'DELETE'],
                 allowedHeaders: ['Content-Type', 'user-id'],
             }));
             app.use(json({ limit: '5mb' }))

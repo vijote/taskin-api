@@ -6,7 +6,9 @@ class PrismaConnection {
     public client: PrismaClient;
 
     constructor() {
-        this.client = new PrismaClient()
+        this.client = new PrismaClient({
+            log: ['query'],
+          })
     }
 }
 
