@@ -3,7 +3,13 @@
 - Esta app fue desarrollada usando Express 4 y Typescript 5.
 - Por favor también descargue la [app frontend](https://github.com/vijote/taskin/) para tener el entorno completo.
 
+<br>
 
+## Deploy en la nube
+La api se encuentra [deployada en Render](https://taskin.onrender.com/) (Puede demorar unos minutos en despertar el servicio)
+- Tambien puede visitar el frontend en el [deploy de Netlify](https://amazing-hamster-e1e505.netlify.app/)
+
+<br>
 
 ## Instalación local
 
@@ -41,20 +47,4 @@
 - Para ejecutar la app en modo desarrollo:
 ```
     yarn dev
-```
-
-## Deploy en la nube
-Puede visitar esta app en el [deploy en Netlify](https://amazing-hamster-e1e505.netlify.app/)
-- La api tambien se encuentra [deployada en Render](https://taskin.onrender.com/) (Puede demorar unos minutos en despertar el servicio)
-
-## Ejecución en local
-Para usar la app en modo desarrollo puede ejecutar:
-- Para instalar dependencias:
-```
-   yarn install
-```
-
-- Para ejecutar en modo desarrollo:
-```
-   yarn dev
 ```
