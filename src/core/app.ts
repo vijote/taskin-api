@@ -14,7 +14,7 @@ import '../controllers/tasks.controller'
 
 // Validation Middlewares
 import ErrorMiddleware from '../middlewares/errorHandler.middleware'
-import EnvironmentConnection from '../services/environment.connection'
+import EnvironmentManager from '../managers/environmentManager'
 
 class App {
     public port: number
@@ -27,7 +27,7 @@ class App {
     }
 
     public initConfig(){
-        const env = new EnvironmentConnection().env;
+        const env = new EnvironmentManager().env;
 
         this.server.setConfig((app: Application) => {
             app.use(cors({

@@ -2,7 +2,7 @@ import { injectable } from 'inversify'
 import { AppException } from '../core/utils'
 
 @injectable()
-class EnvironmentConnection {
+class EnvironmentManager {
     public variables: NodeJS.ProcessEnv
 
     env(variableName: string) {
@@ -16,4 +16,4 @@ class EnvironmentConnection {
     }
 }
 
-export default EnvironmentConnection;
+export default EnvironmentManager;

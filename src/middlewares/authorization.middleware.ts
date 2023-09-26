@@ -4,6 +4,12 @@ import { Request, Response, NextFunction } from 'express'
 import { AppException } from "../core/utils";
 import UsersService from "../services/users.service";
 
+export interface AuthenticatedRequest extends Request {
+    taskin: {
+        userId: number
+    }
+}
+
 @injectable()
 class AuthorizationMiddleware extends BaseMiddleware {
     private usersService: UsersService
@@ -13,7 +19,7 @@ class AuthorizationMiddleware extends BaseMiddleware {
         this.usersService = usersService
     }
 
-    public async handler(req: Request, _res: Response, next: NextFunction) {
+    public async handler(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
         const userId = req.header("user-id")
 
         if (!userId) return next(new AppException('No estás logeado', 401))

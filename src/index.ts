@@ -5,7 +5,7 @@ async function startApp() {
     // Local development only
     if(process.env.NODE_ENV === "local") (await import("dotenv")).config()
 
-    const app = new App(process.env.PORT);
+    const app = new App(process.env.PORT as string);
 
     app.initConfig()
     app.build()

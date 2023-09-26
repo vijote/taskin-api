@@ -1,14 +1,14 @@
 import { injectable } from 'inversify'
-import PrismaConnection from "./prisma.connection";
+import PrismaManager from "../managers/prismaManager";
 import { AppException } from '../core/utils';
-import EnvironmentConnection from './environment.connection';
+import EnvironmentManager from '../managers/environmentManager';
 import Service from './base.service';
+import EncryptionManager from '../managers/encryptionManager';
 
 @injectable()
 class UsersService extends Service {
-
-    constructor(prisma: PrismaConnection, env: EnvironmentConnection) {
-        super(prisma, env)
+    constructor(prisma: PrismaManager, env: EnvironmentManager, newCrypto: EncryptionManager) {
+        super(prisma, env, newCrypto)
     }
 
     async getUser(encodedId: string) {

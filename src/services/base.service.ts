@@ -1,16 +1,18 @@
 import { injectable } from 'inversify'
-import PrismaConnection from './prisma.connection';
-import EnvironmentConnection from './environment.connection';
-import crypto from 'node:crypto';
+import PrismaManager from '../managers/prismaManager';
+import EnvironmentManager from '../managers/environmentManager';
+import EncryptionManager from '../managers/encryptionManager';
 
 @injectable()
 class Service {
-    protected prisma: PrismaConnection;
-    protected environmentConnector: EnvironmentConnection;
+    protected prisma: PrismaManager;
+    protected environmentManager: EnvironmentManager;
+    private crypto: EncryptionManager
 
-    constructor(prisma: PrismaConnection, env: EnvironmentConnection) {
+    constructor(prisma: PrismaManager, env: EnvironmentManager, newCrypto: EncryptionManager) {
         this.prisma = prisma;
-        this.environmentConnector = env;
+        this.environmentManager = env;
+        this.crypto = newCrypto
     }
 
     /**
@@ -18,11 +20,11 @@ class Service {
      * @param id user id
      * @returns base64 encoded string
      */
-    protected encryptId(id: number) {
-        const iv = Buffer.from(this.environmentConnector.env('ENCRYPTION_IV'), 'utf8');
-        const key = Buffer.from(this.environmentConnector.env('ENCRYPTION_KEY').substring(0, 32), 'utf8');
+    public encryptId(id: number) {
+        const iv = Buffer.from(this.environmentManager.env('ENCRYPTION_IV'), 'utf8');
+        const key = Buffer.from(this.environmentManager.env('ENCRYPTION_KEY').substring(0, 32), 'utf8');
 
-        const cipher = crypto.createCipheriv(this.environmentConnector.env('ENCRYPTION_ALGORITHM'), key, iv);
+        const cipher = this.crypto.createCipheriv(this.environmentManager.env('ENCRYPTION_ALGORITHM'), key, iv);
 
         const encrypted = cipher.update(id.toString(), 'utf-8', 'base64') + cipher.final('base64');
 
@@ -34,11 +36,11 @@ class Service {
      * @param id base64 enconded string
      * @returns decoded user id
      */
-    protected decryptId(id: string): number {
-        const iv = Buffer.from(this.environmentConnector.env('ENCRYPTION_IV'), 'utf8');
-        const key = Buffer.from(this.environmentConnector.env('ENCRYPTION_KEY').substring(0, 32), 'utf8');
+    public decryptId(id: string): number {
+        const iv = Buffer.from(this.environmentManager.env('ENCRYPTION_IV'), 'utf8');
+        const key = Buffer.from(this.environmentManager.env('ENCRYPTION_KEY').substring(0, 32), 'utf8');
 
-        const decipher = crypto.createDecipheriv(this.environmentConnector.env('ENCRYPTION_ALGORITHM'), key, iv);
+        const decipher = this.crypto.createDecipheriv(this.environmentManager.env('ENCRYPTION_ALGORITHM'), key, iv);
 
         const decrypted = decipher.update(decodeURIComponent(id), 'base64', 'utf8') + decipher.final('utf8');
 

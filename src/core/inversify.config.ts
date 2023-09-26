@@ -1,14 +1,18 @@
 import { Container } from 'inversify';
 import UsersService from '../services/users.service';
 import UsersController from '../controllers/users.controller';
-import PrismaConnection from '../services/prisma.connection';
+import PrismaManager from '../managers/prismaManager';
 import TasksService from '../services/tasks.service';
 import TasksController from '../controllers/tasks.controller';
 import CreateTaskMiddleware from '../middlewares/createTask.middleware';
 import CreateUserMiddleware from '../middlewares/createUser.middleware';
 import AuthorizationMiddleware from '../middlewares/authorization.middleware';
-import EnvironmentConnection from '../services/environment.connection';
+import EnvironmentManager from '../managers/environmentManager';
 import Service from '../services/base.service';
+import crypto from 'node:crypto'
+import EncryptionManager from '../managers/encryptionManager';
+import { PrismaClient } from '@prisma/client';
+import prisma from '../managers/prismaClient'
 
 const container = new Container();
 
@@ -26,8 +30,10 @@ container.bind(CreateTaskMiddleware).toSelf()
 container.bind(CreateUserMiddleware).toSelf()
 container.bind(AuthorizationMiddleware).toSelf()
 
-// Connections
-container.bind(PrismaConnection).toSelf().inSingletonScope()
-container.bind(EnvironmentConnection).toSelf().inSingletonScope()
+// Managers
+container.bind(PrismaClient).toConstantValue(prisma)
+container.bind(EncryptionManager).toConstantValue(crypto);
+container.bind(PrismaManager).toSelf().inSingletonScope()
+container.bind(EnvironmentManager).toSelf().inSingletonScope()
 
 export default container;

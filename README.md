@@ -48,3 +48,5 @@ La api se encuentra [deployada en Render](https://taskin.onrender.com/) (Puede d
 ```
     yarn dev
 ```
+
+- Si encuentra un problema al iniciar la aplicación por primera vez, por favor reiniciela

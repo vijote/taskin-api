@@ -1,10 +1,11 @@
 import { injectable } from 'inversify'
-import PrismaConnection from "./prisma.connection";
+import PrismaManager from "../managers/prismaManager";
 import { TaskState } from '../enums/taskState.enum';
 import { AppException } from '../core/utils';
 import Service from './base.service';
-import EnvironmentConnection from './environment.connection';
+import EnvironmentManager from '../managers/environmentManager';
 import { ParsedQs } from 'qs';
+import EncryptionManager from '../managers/encryptionManager';
 
 type CreateTaskOptions = {
     content: string,
@@ -28,9 +29,8 @@ type EncodedTask = {
 
 @injectable()
 class TasksService extends Service {
-
-    constructor(prisma: PrismaConnection, env: EnvironmentConnection) {
-        super(prisma, env)
+    constructor(prisma: PrismaManager, env: EnvironmentManager, newCrypto: EncryptionManager) {
+        super(prisma, env, newCrypto)
     }
 
     async getAllGroupedByState(userId: number) {
@@ -89,9 +89,9 @@ class TasksService extends Service {
         })
     }
 
-    private generateQueryOptions(queryParams: ParsedQs) {
-        const orderByOptions = []
-        const filterOptions = {}
+    generateQueryOptions(queryParams: ParsedQs) {
+        const orderByOptions: { [key: string]: 'asc' | 'desc' }[] = []
+        const filterOptions: { [key: string]: string | { contains: string } } = {}
 
         const orderDict = {
             '0': 'desc',
